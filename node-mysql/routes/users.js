@@ -34,4 +34,31 @@ router.get('/create/:name/:email', function(req, res) {
 	connection.end();
 });
 
+router.get('/get/:id', function(req, res) {
+	var mysql      = require('mysql');
+	var connection = mysql.createConnection({
+	  host		:	'localhost',
+	  user		:	'root',
+	  password	:	'sd',
+	  database	:	'usersone'
+	});
+
+	connection.connect();
+
+	id = req.params['id'];
+
+	var query = 'select * from users where _id = "' + id + '"';
+	console.log('query: ', query);
+
+	connection.query(query, function(err, rows, fields) {
+	  if (err) throw err;
+
+	  console.log('ROWS:', rows);
+	  console.log('FIELDS: ', fields);
+	  res.send(rows);
+	});
+
+	connection.end();
+});
+
 module.exports = router;
