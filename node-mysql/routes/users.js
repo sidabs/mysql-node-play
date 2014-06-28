@@ -6,7 +6,7 @@ router.get('/', function(req, res) {
   res.send('respond with a resource');
 });
 
-router.get('/create', function(req, res) {
+router.get('/create/:name/:email', function(req, res) {
 	var mysql      = require('mysql');
 	var connection = mysql.createConnection({
 	  host		:	'localhost',
@@ -17,7 +17,15 @@ router.get('/create', function(req, res) {
 
 	connection.connect();
 
-	connection.query('insert into users values ("abc", "sid", "sd@test.com")', function(err, result) {
+
+	id = new Date().getTime();
+	name = req.params['name'];
+	email = req.params['email'];
+
+	var query = 'insert into users values ("' + id + '", "' + name + '", "' + email + '")'
+	console.log('query: ', query);
+
+	connection.query(query, function(err, result) {
 	  if (err) throw err;
 
 	  res.send(result);
