@@ -34,7 +34,7 @@ router.get('/create/:name/:email', function(req, res) {
 	connection.end();
 });
 
-router.get('/get/:id', function(req, res) {
+router.get('/get/:id?', function(req, res) {
 	var mysql      = require('mysql');
 	var connection = mysql.createConnection({
 	  host		:	'localhost',
@@ -45,9 +45,14 @@ router.get('/get/:id', function(req, res) {
 
 	connection.connect();
 
-	id = req.params['id'];
+	if(req.params['id']) {
+		//retrieve the user with the passed id
+		var query = 'select * from users where _id = "' + req.params['id'] + '"';
+	} else {
+		//rertrieve all users
+		var query = 'select * from users';
+	}
 
-	var query = 'select * from users where _id = "' + id + '"';
 	console.log('query: ', query);
 
 	connection.query(query, function(err, rows, fields) {
