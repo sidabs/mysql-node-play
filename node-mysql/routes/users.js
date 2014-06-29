@@ -74,6 +74,36 @@ router.get('/get/:id?', function(req, res) {
 	helpers.endConnection(dbConn);
 });
 
-router.get('update/:id/:name/:email', function(req,res) {});
+router.get('/update/:id/:name/:email', function(req,res) {
+	var updatedName = req.params['name'] ? req.params['name'] : null;
+	var updatedEmail = req.params['email'] ? req.params['email'] : null;
+
+	// var query = 'update users ';
+	// if(req.params['name']) {
+	// 	query += 'set name="' + req.params['name'] + '", ';
+	// }
+	// if(req.params['email']) {
+	// 	query += 'set email="' + req.params['email'] + '", ';
+	// }
+
+	// if(query.charAt(query.length-2) == ',') {
+	// 	query = query.substring(0, query.length-2);
+	// }
+	// query += ' where _id="' + req.params['id'] + '"';
+
+	var query = 'update users set name = "' + req.params['name'] + '", email = "' + req.params['email'] + '" where _id = "' + req.params['id'] + '"';
+	console.log(query);
+
+	var dbConn = helpers.createConnection(helpers.connectionOptions);
+	helpers.startConnection(dbConn);
+	helpers.query(dbConn, query, function(dbError, dbRows, dbFields) {
+		res.json({
+			error:	dbError,
+			rows:	dbRows,
+			fields:	dbFields
+		});
+	});
+	helpers.endConnection(dbConn);
+});
 
 module.exports = router;
