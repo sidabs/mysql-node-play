@@ -75,8 +75,9 @@ router.get('/get/:id?', function(req, res) {
 });
 
 router.get('/update/:id/:name/:email', function(req,res) {
-	var updatedName = req.params['name'] ? req.params['name'] : null;
-	var updatedEmail = req.params['email'] ? req.params['email'] : null;
+	var id = req.params['id'];
+	var updatedName = req.params['name'];
+	var updatedEmail = req.params['email'];
 
 	// var query = 'update users ';
 	// if(req.params['name']) {
@@ -91,7 +92,25 @@ router.get('/update/:id/:name/:email', function(req,res) {
 	// }
 	// query += ' where _id="' + req.params['id'] + '"';
 
-	var query = 'update users set name = "' + req.params['name'] + '", email = "' + req.params['email'] + '" where _id = "' + req.params['id'] + '"';
+	var query = 'update users set name = "' + updatedName + '", email = "' + updatedEmail + '" where _id = "' + id + '"';
+	console.log(query);
+
+	var dbConn = helpers.createConnection(helpers.connectionOptions);
+	helpers.startConnection(dbConn);
+	helpers.query(dbConn, query, function(dbError, dbRows, dbFields) {
+		res.json({
+			error:	dbError,
+			rows:	dbRows,
+			fields:	dbFields
+		});
+	});
+	helpers.endConnection(dbConn);
+});
+
+router.get('/delete/:id', function(req,res) {
+	var id = req.params['id'];
+
+	var query = 'delete from users where _id = "' + id + '"';
 	console.log(query);
 
 	var dbConn = helpers.createConnection(helpers.connectionOptions);
