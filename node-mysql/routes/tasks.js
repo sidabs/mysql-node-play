@@ -9,12 +9,11 @@ router.get('/', function(req, res) {
   res.send('respond with a resource');
 });
 
-router.get('/create/:name/:email', function(req, res) {
+router.get('/create/:task', function(req, res) {
 	var id = new Date().getTime();
-	var name = escape(req.params['name']);
-	var email = escape(req.params['email']);
+	var task = escape(req.params['task']);
 
-	var query = 'call createNewUser("' + id + '", "' + name + '", "' + email + '")';	//var query = 'insert into users values ("' + id + '", "' + name + '", "' + email + '")';
+	var query = 'call createNewTask("' + id + '", "' + task + '")';
 	console.log('query: ', query);
 
 	var dbConn = helpers.createConnection(helpers.connectionOptions);
@@ -32,11 +31,9 @@ router.get('/create/:name/:email', function(req, res) {
 router.get('/get/:id?', function(req, res) {
 	var id = req.params['id'];
 	if(id) {
-		//retrieve the user with the passed id
-		var query = 'call getUserById("' + id + '")';	// var query = 'select * from users where _id = "' + req.params['id'] + '"';
+		var query = 'call getTaskById("' + id + '")';
 	} else {
-		//rertrieve all users
-		var query = 'call getUsers()';	//var query = 'select * from users';
+		var query = 'call getTasks()';
 	}
 	console.log('query: ', query);
 
@@ -52,25 +49,11 @@ router.get('/get/:id?', function(req, res) {
 	helpers.endConnection(dbConn);
 });
 
-router.get('/update/:id/:name/:email', function(req,res) {
+router.get('/update/:id/:task', function(req,res) {
 	var id = req.params['id'];
-	var updatedName = escape(req.params['name']);
-	var updatedEmail = escape(req.params['email']);
+	var updatedTask = escape(req.params['task']);
 
-	// var query = 'update users ';
-	// if(req.params['name']) {
-	// 	query += 'set name="' + req.params['name'] + '", ';
-	// }
-	// if(req.params['email']) {
-	// 	query += 'set email="' + req.params['email'] + '", ';
-	// }
-
-	// if(query.charAt(query.length-2) == ',') {
-	// 	query = query.substring(0, query.length-2);
-	// }
-	// query += ' where _id="' + req.params['id'] + '"';
-
-	var query = 'call updateUserById("' + id + '", "' + updatedName + '", "' + updatedEmail + '")';	//var query = 'update users set name = "' + updatedName + '", email = "' + updatedEmail + '" where _id = "' + id + '"';
+	var query = 'call updateTaskById("' + id + '", "' + updatedTask + '")';
 	console.log(query);
 
 	var dbConn = helpers.createConnection(helpers.connectionOptions);
@@ -88,7 +71,7 @@ router.get('/update/:id/:name/:email', function(req,res) {
 router.get('/delete/:id', function(req,res) {
 	var id = req.params['id'];
 
-	var query = 'call deleteUserById("' + id + '")';	//var query = 'delete from users where _id = "' + id + '"';
+	var query = 'call deleteTaskById("' + id + '")';
 	console.log(query);
 
 	var dbConn = helpers.createConnection(helpers.connectionOptions);
