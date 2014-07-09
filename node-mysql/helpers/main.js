@@ -4,7 +4,7 @@ var helpers = {
 		host		:	'localhost',
 		user		:	'root',
 		password	:	'sd',
-		database	:	'usersone'
+		database	:	'bm'
 	},
 	createConnection: function(options) {
 		var connection = mysql.createConnection(options);
@@ -18,6 +18,11 @@ var helpers = {
 	},
 	query: function(connection, query, callback) {
 		connection.query(query, function(dbError, dbRows, dbFields) {
+			callback(dbError, dbRows, dbFields);
+		});
+	},
+	queryWithParams: function(connection, query, params, callback) {
+		connection.query(query, params, function(dbError, dbRows, dbFields) {
 			callback(dbError, dbRows, dbFields);
 		});
 	}

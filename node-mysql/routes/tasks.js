@@ -13,19 +13,59 @@ router.get('/create/:task', function(req, res) {
 	var id = new Date().getTime();
 	var task = escape(req.params['task']);
 
-	var query = 'call createNewTask("' + id + '", "' + task + '")';
-	console.log('query: ', query);
+	var query = 'call createNewTask(?, ?)';
+	var queryParams = [id, task];
 
-	var dbConn = helpers.createConnection(helpers.connectionOptions);
-	helpers.startConnection(dbConn);
-	helpers.query(dbConn, query, function(dbError, dbRows, dbFields) {
-		res.json({
-			error:	dbError,
-			rows:	dbRows,
-			fields:	dbFields
-		});
+	console.log('query: ', query);
+	console.log('queryParams: ', queryParams);
+
+	var mysql = require('mysql');
+	var connection = mysql.createConnection({
+		host		:	'localhost',
+		user		:	'root',
+		password	:	'sd',
+		database	:	'usersone'
 	});
-	helpers.endConnection(dbConn);
+	connection.connect();
+	connection.query(query, queryParams, function(dbError, dbRows, dbFields) {
+		console.log(dbError);
+		console.log(dbRows);
+		console.log(dbFields);
+	});
+	connection.end();
+
+
+	// var dbConn = helpers.createConnection(helpers.connectionOptions);
+	// helpers.startConnection(dbConn);
+	// helpers.queryWithParams(dbConn, query, queryParams, function(dbError, dbRows, dbFields) {
+	// 	res.json({
+	// 		error:	dbError,
+	// 		rows:	dbRows,
+	// 		fields:	dbFields
+	// 	});
+	// });
+	// helpers.endConnection(dbConn);
+
+
+
+
+
+	// var id = new Date().getTime();
+	// var task = escape(req.params['task']);
+
+	// var query = 'call createNewTask("' + id + '", "' + task + '")';
+	// console.log('query: ', query);
+
+	// var dbConn = helpers.createConnection(helpers.connectionOptions);
+	// helpers.startConnection(dbConn);
+	// helpers.query(dbConn, query, function(dbError, dbRows, dbFields) {
+	// 	res.json({
+	// 		error:	dbError,
+	// 		rows:	dbRows,
+	// 		fields:	dbFields
+	// 	});
+	// });
+	// helpers.endConnection(dbConn);
 });
 
 router.get('/get/:id?', function(req, res) {
