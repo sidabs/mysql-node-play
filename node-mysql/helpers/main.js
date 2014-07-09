@@ -4,7 +4,7 @@ var helpers = {
 		host		:	'localhost',
 		user		:	'root',
 		password	:	'sd',
-		database	:	'bm'
+		database	:	'usersone'
 	},
 	createConnection: function(options) {
 		var connection = mysql.createConnection(options);

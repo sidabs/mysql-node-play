@@ -6,7 +6,75 @@ var helpers = require('../helpers/main');
 
 /* GET users listing. */
 router.get('/', function(req, res) {
-  res.send('respond with a resource');
+  // res.send('respond with a resource');
+
+  	//STEPS
+  	//1)	Get the specific user (id = 1)
+	//2)	Get all the tasks associated with that user
+	//			A) Query joining user tasks and task
+	//3)	Add all user tasks to user object's task array
+	
+  	var query = 'select u._id as userId, u.name as userName, u.email as userEmail, u.active as userStatus, t._id as taskId, t.task as task from users as u, tasks as t, usertasks as ut where u._id = ? and u._id = ut.userId and t._id = ut.taskId';	//var query = 'insert into users values ("' + id + '", "' + name + '", "' + email + '")';
+  	var queryParameters = ['1'];
+
+	var dbConn = helpers.createConnection(helpers.connectionOptions);
+	helpers.startConnection(dbConn);
+	helpers.queryWithParams(dbConn, query, queryParameters, function(dbError, dbRows, dbFields) {
+		var user = {
+			_id:	dbRows[0].userId,
+			name:	dbRows[0].userName,
+			email:	dbRows[0].email,
+			status:	dbRows[0].active,
+			taskList: []
+		};
+		dbRows.forEach(function(rowValue, rowIndex) {
+			user.taskList.push({
+				_id:	rowValue.taskId,
+				task:	rowValue.task
+			});
+		});
+
+		res.json({
+			error:		null,
+			payload:	user
+		});
+		// res.json({
+		// 	error:	dbError,
+		// 	rows:	dbRows,
+		// 	fields:	dbFields
+		// });
+	});
+
+
+
+ //  	//STEPS
+ //  	//1)	Get the specific user (id = 1)
+	// //2)	Get all the tasks associated with that user
+	// //			A) Query joining user tasks and task
+	// //3)	Add all user tasks to user object's task array
+	
+ //  	var query = 'select * from users where _id = ?';	//var query = 'insert into users values ("' + id + '", "' + name + '", "' + email + '")';
+ //  	var queryParameters = ['1'];
+
+	// var dbConn = helpers.createConnection(helpers.connectionOptions);
+	// helpers.startConnection(dbConn);
+	// helpers.queryWithParams(dbConn, query, queryParameters, function(dbError, dbRows, dbFields) {
+	// 	helpers.endConnection(dbConn);
+	// 	var query2 = 'select t._id, t.task from usertasks as ut, tasks as t where ut.userId = ? and ut.taskId = t._id';	//var query = 'insert into users values ("' + id + '", "' + name + '", "' + email + '")';
+	// 	var query2Parameters = ['1'];
+
+	// 	var dbConn2 = helpers.createConnection(helpers.connectionOptions);
+	// 	helpers.startConnection(dbConn2);
+	// 	helpers.queryWithParams(dbConn2, query2, query2Parameters, function(dbError2, dbRows2, dbFields2) {
+	// 		helpers.endConnection(dbConn2);
+	// 		var user = dbRows[0];
+	// 		user.tasks = dbRows2;
+	// 		res.json({
+	// 			error:	null,
+	// 			result:	user
+	// 		})
+	// 	});
+	// });
 });
 
 router.get('/create/:name/:email', function(req, res) {
